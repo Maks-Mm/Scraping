@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "refresh-list": "node utils/refresh-list.js"
+    "refresh-list": "node utils/refresh-list.js",
+    "get-article":"node utils/article-scraper.js"
   },
   "author": "",
   "license": "ISC",
