@@ -1,5 +1,5 @@
-import { saveArticleList } from "./db";
-import BlgArticleListScraper from "./BlgArticleListScraper";
+import { saveArticleList } from "../lib/db.js";
+import BlgArticleListScraper from "../lib/BlgArticleListScraper.js";
 
 (async () => {
   const url = "https://www.blg-logistics.com/presse";

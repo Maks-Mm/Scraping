@@ -7,7 +7,6 @@ import ArticleScraper from "../lib/ArticleScraper.js"
     titleSelector: "header h1",
     contentSelector: ".ce-bodytext",
     dateSelector: "header p",
-    authorSelector: "",
   };
 
   const scraper = new ArticleScraper(url, selectors);
