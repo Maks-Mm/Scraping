@@ -1,12 +1,11 @@
 import ArticleScraper from "../lib/ArticleScraper.js";
-import { getLatestArticleList, saveArticle } from "../lib/db.js";
+import { getLatestArticleList, saveArticle, getArticles } from "../lib/db.js";
 
+const siteName = "BLG Logistik";
 const pause = async (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-const url =
-  "https://www.blg-logistics.com/presse/suedhafen-schwer-im-geschaeft-umschlag-und-montage-von-kraftwerksmodulen-auf-neuer-blg-flaeche-in-bremerhaven"; // URL статьи
 const articleScrap = async (url) => {
   const selectors = {
     titleSelector: "header h1",
@@ -18,17 +17,42 @@ const articleScrap = async (url) => {
   const articleData = await scraper.execute();
 
   if (articleData) {
+    articleData.siteName = siteName;
+    articleData.link = url;
     await saveArticle(articleData);
     console.log("Данные статьи:", articleData);
   } else {
     console.log("Не удалось извлечь данные статьи.");
   }
 };
-const obj = await getLatestArticleList("BLG Logistik");
+const obj = await getLatestArticleList(siteName);
 //console.log(obj);
-obj.articleList.map(async (article, index) => {
-  await pause(index * 1137);
+const allArticles = obj.articleList;
+const existetArticles = await getArticles(siteName);
+//the filter work no correct
+const articlesForScraping = allArticles.filter((article) => {
+  return !existetArticles.some(
+    (existingArticle) => existingArticle.link === article.link
+  );
+});
+console.log("articlesForScraping:", articlesForScraping.length);
+const chank = [
+  articlesForScraping[0],
+  articlesForScraping[1],
+  articlesForScraping[2],
+];
+
+chank.map(async (article, index) => {
+  await pause(index * 1137 + 2000);
   console.log(article.link);
   await articleScrap(article.link);
 });
-//await articleScrap(url);
+
+/*
+  test
+*/
+
+/*
+const url =
+  "https://www.blg-logistics.com/presse/suedhafen-schwer-im-geschaeft-umschlag-und-montage-von-kraftwerksmodulen-auf-neuer-blg-flaeche-in-bremerhaven"; // URL статьи
+//await articleScrap(url);*/
