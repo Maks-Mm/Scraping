@@ -1,8 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getArticles } from "../lib/db.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 // Константы
-const API_KEY = "AIzaSyC32GN759QiVJZlEQLa5R2fML53h0q9zEQ";
+const API_KEY = process.env.API_KEY;
 const siteName = "BLG Logistik";
 
 // Создание экземпляра GoogleGenerativeAI
