@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "refresh-list": "node utils/blg-list-scraping.js",
     "get-article": "node utils/article-scraper.js",
-    "ai": "node utils/gemini-1.5-flash.js"
+    "ai": "node utils/gemini-1.5-flash.js",
+    "clean-up":"node utils/remove-article-duplicates.js"
   },
   "author": "",
   "license": "ISC",
