@@ -34,7 +34,9 @@ async function generateContent(article) {
 }
 
 const analyzeArticles = await getAnalyzeArticles(siteName);
+console.log(siteName);
 const articles = await getArticles(siteName);
+console.log("artikles",articles.length);
 
 const articlesForAnalyze = articles.filter((article) => {
   return !analyzeArticles.some(
@@ -43,15 +45,24 @@ const articlesForAnalyze = articles.filter((article) => {
 });
 
 console.log("articlesForAnalyze:", articlesForAnalyze.length);
-const chank = [
-  articlesForAnalyze[0],
-  articlesForAnalyze[1],
-  articlesForAnalyze[2],
-];
-chank.forEach((article) => {
-  if (!article) {
-    console.error("Статья не найдена!");
-  } else {
-    generateContent(article);
-  }
-});
+
+if(articlesForAnalyze.length > 0){
+
+  const chunks  = [
+    articlesForAnalyze[0],
+    articlesForAnalyze[1],
+    articlesForAnalyze[2],
+  ];
+  console.log(chunks);
+  chunks.forEach((article) => {
+    if (!article) {
+      console.error("Статья не найдена!");
+    } else {
+      generateContent(article);
+    }
+  });
+}else{
+  console.log("all articles are analyzed");
+}
+
+
