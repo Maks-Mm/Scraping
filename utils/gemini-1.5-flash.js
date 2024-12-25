@@ -57,13 +57,10 @@ async function generateContent(article) {
 
     console.log(`Статей для анализа: ${articlesForAnalyze.length}`);
 
-    // Если есть статьи для анализа
     if (articlesForAnalyze.length > 0) {
-      // Берем только первые три статьи для анализа
       const chunks = articlesForAnalyze.slice(0, 3);
       console.log("Обрабатываем статьи:", chunks);
 
-      // Использование Promise.all для обработки всех статей параллельно
       await Promise.all(
         chunks.map(async (article) => {
           if (!article) {
@@ -82,6 +79,5 @@ async function generateContent(article) {
     console.error("Ошибка в процессе обработки:", error);
   }
 
-  // Завершение процесса
   process.exit(0);
 })();

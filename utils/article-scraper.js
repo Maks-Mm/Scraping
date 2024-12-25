@@ -36,18 +36,22 @@ const articlesForScraping = allArticles.filter((article) => {
   );
 });
 console.log("articlesForScraping:", articlesForScraping.length);
-const chank = [
-  articlesForScraping[0],
-  articlesForScraping[1],
-  articlesForScraping[2],
-];
 
-chank.map(async (article, index) => {
-  await pause(index * 1137 + 2000);
-  console.log(article.link);
-  await articleScrap(article.link);
-});
+if (existetArticles.length > 0) {
+  const chunks = existetArticles.slice(0, 3);
+  console.log(chunks, "new order work");
 
+  await Promise.all(
+    chunks.map(async (article, index) => {
+      await pause(index * 1137 + 2000);
+      console.log(article.link);
+      await articleScrap(article.link);
+    })
+  );
+} else {
+  console.log("all articles are scraped !");
+}
+process.exit(0);
 /*
   test
 */
