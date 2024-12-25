@@ -10,11 +10,13 @@ dotenv.config();
 const API_KEY = process.env.API_KEY;
 const siteName = "BLG Logistik";
 
+// Инициализация API
 const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+// Функция для генерации контента
 async function generateContent(article) {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const response = await model.generateContent([
       `answer in russian language. You must analyze the article: ${article}`,
     ]);
@@ -27,42 +29,59 @@ async function generateContent(article) {
       siteName: article.siteName,
       link: article.link,
     };
-    saveAnalyzeArticle(newAnalyzeArticle);
+
+    // Сохранение анализа статьи в базе данных
+    await saveAnalyzeArticle(newAnalyzeArticle);
   } catch (error) {
-    console.error("Ошибка:", error.message);
+    console.error("Ошибка при анализе статьи:", error);
   }
 }
 
-const analyzeArticles = await getAnalyzeArticles(siteName);
-console.log(siteName);
-const articles = await getArticles(siteName);
-console.log("artikles",articles.length);
+// Основная логика
+(async () => {
+  try {
+    // Получение уже проанализированных статей
+    const analyzeArticles = await getAnalyzeArticles(siteName);
+    console.log(`${siteName} - Всего проанализированных статей: ${analyzeArticles.length}`);
 
-const articlesForAnalyze = articles.filter((article) => {
-  return !analyzeArticles.some(
-    (analyzeArticle) => analyzeArticle.link === article.link
-  );
-});
+    // Получение всех статей
+    const articles = await getArticles(siteName);
+    console.log(`${siteName} - Всего статей: ${articles.length}`);
 
-console.log("articlesForAnalyze:", articlesForAnalyze.length);
+    // Отбор статей, которые еще не проанализированы
+    const articlesForAnalyze = articles.filter((article) => {
+      return !analyzeArticles.some(
+        (analyzeArticle) => analyzeArticle.link === article.link
+      );
+    });
 
-if(articlesForAnalyze.length > 0){
+    console.log(`Статей для анализа: ${articlesForAnalyze.length}`);
 
-  const chunks  = [
-    articlesForAnalyze[0],
-    articlesForAnalyze[1],
-    articlesForAnalyze[2],
-  ];
-  console.log(chunks);
-  chunks.forEach((article) => {
-    if (!article) {
-      console.error("Статья не найдена!");
+    // Если есть статьи для анализа
+    if (articlesForAnalyze.length > 0) {
+      // Берем только первые три статьи для анализа
+      const chunks = articlesForAnalyze.slice(0, 3);
+      console.log("Обрабатываем статьи:", chunks);
+
+      // Использование Promise.all для обработки всех статей параллельно
+      await Promise.all(
+        chunks.map(async (article) => {
+          if (!article) {
+            console.error("Статья не найдена!");
+          } else {
+            await generateContent(article);
+          }
+        })
+      );
+
+      console.log("Анализ завершен для всех статей.");
     } else {
-      generateContent(article);
+      console.log("Все статьи уже проанализированы.");
     }
-  });
-}else{
-  console.log("all articles are analyzed");
-}
+  } catch (error) {
+    console.error("Ошибка в процессе обработки:", error);
+  }
 
-
+  // Завершение процесса
+  process.exit(0);
+})();
