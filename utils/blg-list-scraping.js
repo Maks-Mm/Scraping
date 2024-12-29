@@ -15,5 +15,6 @@ import BlgArticleListScraper from "../lib/BlgArticleListScraper.js";
 
   if (articles) {
     await saveArticleList("BLG Logistik", url, articles);
+    process.exit(0);
   }
 })();
