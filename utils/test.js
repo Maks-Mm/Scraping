@@ -8,4 +8,11 @@ const date = new Date().toISOString().replace(/:/g, "-");
 fs.writeFileSync(`log/${date}.txt`, "string");
 
 console.log("Datei wurde erfolgreich erstellt.");
-//meie aufagbe ,ich muss in der UhrApp so erstellen ,dass die Aufgabe interwal mit uhrzeit mit pause 1 stunde schafft
+/*
+ wir haben ein Scraping von Artiklen ,mit dienen wir arbeiten mussen ,
+ wir nehmen daten aus package.json um die daten im Terminal aufzurufen ,
+ dabei schreiben wir ai...Nahme von verschiedenen Listen ,
+ und wir brauchen einen Mechanismus der die Arbeit oder Aufgaben ubernehemt,
+ die neue Daten zu prufen ,eventuell lochen wir sue in json waren ,
+ also er muss der alles automatisieren  
+*/
