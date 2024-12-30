@@ -1,24 +1,25 @@
-////////////////////////////// БУ !!!!!!!!!!!!!!!
-////////////////////////////// БУ !!!!!!!!!!!!!!!
-////////////////////////////// БУ !!!!!!!!!!!!!!!
-////////////////////////////// БУ !!!!!!!!!!!!!!!
-////////////////////////////// БУ !!!!!!!!!!!!!!!
-////////////////////////////// БУ !!!!!!!!!!!!!!!
-////////////////////////////// БУ !!!!!!!!!!!!!!!
-////////////////////////////// БУ !!!!!!!!!!!!!!!
-////////////////////////////// БУ !!!!!!!!!!!!!!!
+import { execSync } from "child_process"; // Import for executing shell commands
 
-import { exec } from "child_process"; // Import exec for executing commands
-import fs from "fs"; // Import fs for filesystem operations
-import path from "path"; // Import path for path operations
-import { fileURLToPath } from 'url'; // Import for converting URL to path
 
-// Get the directory name of the current module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Function to check if the process is already running
+const isProcessRunning = (processName) => {
+  try {
+    const result = execSync(`ps -A | grep ${processName}`);
+    return result.toString().includes(processName);
+  } catch {
+    return false; // Process not found
+  }
+};
 
-// Path to the lock file
-const lockFilePath = path.join(__dirname, 'lockfile.tmp');
+// Set a unique process name
+const processName = "auto-scraping-and-analysis";
+process.title = processName;
+
+// Check if the process is already running
+if (isProcessRunning(processName)) {
+  console.log("Process is already running.");
+  process.exit(0); // Exit if another instance is running
+}
 
 // Function to execute a command
 const runCommand = (command) => {
@@ -35,32 +36,16 @@ const runCommand = (command) => {
   });
 };
 
-// Function to check if locked
-const isLocked = () => {
-  return fs.existsSync(lockFilePath); // Check if the lock file exists
-};
-
-// Function to set the lock
-const setLock = () => {
-  fs.writeFileSync(lockFilePath, "locked"); // Create the lock file
-};
-
-// Function to release the lock
-const releaseLock = () => {
-    console.log("releaseLock is started");
-  if (fs.existsSync(lockFilePath)) {
-    fs.unlinkSync(lockFilePath); // Delete the lock file
-  }
-};
+let isRunning = false; // Flag to track if tasks are currently running
 
 // Function to run tasks
 const runTasks = async () => {
-  if (isLocked()) {
-    console.log("Process is already running. Cannot start again."); // If locked
-    return; // Exit
+  if (isRunning) {
+    console.log("Tasks are already running. Skipping this interval.");
+    return; // Prevent overlapping executions
   }
 
-  setLock(); // Set lock before starting tasks
+  isRunning = true; // Set the flag to indicate tasks are running
 
   // List of commands to execute
   const commands = [
@@ -76,12 +61,11 @@ const runTasks = async () => {
       console.log(`Starting: ${command}`); // Log the command being executed
       await runCommand(command); // Execute the command
       console.log(`Command "${command}" executed successfully!`); // Log success
-      releaseLock();
     }
   } catch (error) {
     console.error("An error occurred while executing tasks:", error); // Log error
   } finally {
-    releaseLock(); // Release the lock at the end
+    isRunning = false; // Reset the flag after tasks are completed
   }
 };
 
@@ -89,15 +73,15 @@ const runTasks = async () => {
 const startAutomation = () => {
   runTasks(); // Execute tasks immediately at start
 
-  // Set an interval of 2 minutes 
-  // (120,000 milliseconds)
-  setInterval(runTasks, 1000*60*30);
- // setInterval(runTasks, 1000*60*2);
+  // Set an interval of 30 minutes
+  setInterval(runTasks, 1000 * 60 * 30);
 };
-/*
-wir brauchen eine Pfand ,der aus anderem Platz kommt ,und wir konnen nicht die Befehle aufstraten in Node Ordner
 
-wir mussen neue Pfande schaffen die den Prozess ermoglichen 
+/*
+This script prevents multiple instances of itself from running
+by checking the process name before starting. It also avoids
+overlapping task execution by using a flag to track state.
 */
+
 // Start the automation
 startAutomation();
