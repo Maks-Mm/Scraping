@@ -9,8 +9,8 @@
     "refresh-list": "node utils/blg-list-scraping.js",
     "get-article": "node utils/article-scraper.js",
     "ai": "node utils/gemini-1.5-flash.js",
-    "ai-full":"node utils/gemini-ai-full.js",
-    "clean-up":"node utils/remove-article-duplicates.js"
+    "ai-full": "node utils/gemini-ai-full.js",
+    "clean-up": "node utils/remove-article-duplicates.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,7 +20,8 @@
     "cheerio": "^1.0.0",
     "dotenv": "^16.4.7",
     "mongoose": "^8.8.3",
-    "puppeteer": "^23.9.0"
+    "puppeteer": "^23.9.0",
+    "single-instance": "^0.0.1"
   },
   "type": "module"
 }
