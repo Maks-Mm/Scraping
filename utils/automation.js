@@ -11,6 +11,8 @@ const isProcessRunning = async (processName) => {
     // Поиск процессов по имени
     const processes = await find("name", processName);
 
+    console.log(processes);
+
     // Проверяем, есть ли запущенные процессы с данным именем
     return processes.some((proc) => proc.name.includes(processName));
   } catch (error) {
