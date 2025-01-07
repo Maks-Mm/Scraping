@@ -1,11 +1,9 @@
-import { exec } from "child_process"; // Импорт для выполнения команд
+import { exec } from "child_process"; 
 import SingleInstance from "single-instance"; 
 
-// Установка уникального имени процесса
 const processName = "auto-scraping-and-analysis";
 const locker = new SingleInstance(processName);
 
-// Функция для выполнения команды
 const runCommand = (command) => {
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
@@ -20,48 +18,46 @@ const runCommand = (command) => {
   });
 };
 
-let isRunning = false; // Флаг для отслеживания выполнения задач
+let isRunning = false; 
 
-// Функция для выполнения задач
 const runTasks = async () => {
   if (isRunning) {
     console.log("Задачи уже выполняются. Пропуск этого интервала.");
-    return; // Предотвращение наложения выполнения
+    return; 
   }
 
-  isRunning = true; // Установка флага, что задачи выполняются
+  isRunning = true; 
 
-  // Список команд для выполнения
   const commands = [
     "npm run refresh-list",
     "npm run get-article",
     "npm run ai",
     "npm run ai-full",
     "npm run clean-up",
+    "npm run sync"
   ];
 
   try {
     for (const command of commands) {
-      console.log(`Запуск: ${command}`); // Лог текущей команды
-      await runCommand(command); // Выполнение команды
-      console.log(`Команда "${command}" успешно выполнена!`); // Лог успеха
+      console.log(`Запуск: ${command}`); 
+      await runCommand(command); 
+      console.log(`Команда "${command}" успешно выполнена!`); 
     }
   } catch (error) {
-    console.error("Произошла ошибка при выполнении задач:", error); // Лог ошибки
+    console.error("Произошла ошибка при выполнении задач:", error); 
   } finally {
-    isRunning = false; // Сброс флага после завершения задач
+    isRunning = false; 
   }
 };
 
-// Проверка, является ли процесс единственным экземпляром
 locker.lock()
   .then(() => {
     console.log("Запущено одно приложение!");
-    runTasks(); // Запуск задач
-    // Установка интервала 30 минут
+    runTasks(); 
+    
     setInterval(runTasks, 1000 * 60 * 30);
   })
   .catch((err) => {
     console.log("Процесс уже запущен.");
-    process.exit(0); // Завершение, если экземпляр уже существует
+    process.exit(0); 
   });

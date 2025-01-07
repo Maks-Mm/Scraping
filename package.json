@@ -10,7 +10,8 @@
     "get-article": "node utils/article-scraper.js",
     "ai": "node utils/gemini-1.5-flash.js",
     "ai-full": "node utils/gemini-ai-full.js",
-    "clean-up": "node utils/remove-article-duplicates.js"
+    "clean-up": "node utils/remove-article-duplicates.js",
+    "sync":"node utils/sync.js"
   },
   "author": "",
   "license": "ISC",
