@@ -1,19 +1,30 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Подключение к первой базе данных
-const db1 = mongoose.createConnection("mongodb://127.0.0.1:27017/scraping", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const db1 = mongoose.createConnection("mongodb://127.0.0.1:27017/scraping");
 
 // Подключение ко второй базе данных
-const db2 = mongoose.createConnection(
-  "mongodb+srv://maxfilawwwrest:4SlB0GY7Ne5mg7qy@cluster0.6envw.mongodb.net/analyzer?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+const db2 = mongoose.createConnection(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/analyzer");
+
+// Error handling for connections
+db1.on('error', (err) => {
+  console.error('Local DB Connection error:', err);
+});
+
+db2.on('error', (err) => {
+  console.error('Atlas DB Connection error:', err);
+});
+
+db1.once('open', () => {
+  console.log('Connected to local database');
+});
+
+db2.once('open', () => {
+  console.log('Connected to Atlas database');
+});
 
 const ArticleListSchema = {
   siteName: String,

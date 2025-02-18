@@ -20,7 +20,7 @@ async function generateContent(allAnalyzedArticles) {
   try {
     const json = JSON.stringify(allAnalyzedArticles);
     const response = await model.generateContent([
-      `answer in russian language. you have to analyse the data, make a concentration of the data: ${json}`,
+      `answer in english language. you have to analyse the data, make a concentration of the data: ${json}`,
     ]);
     console.log("Ответ:", response.response.text());
 

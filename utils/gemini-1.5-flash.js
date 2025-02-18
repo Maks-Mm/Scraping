@@ -18,7 +18,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 async function generateContent(article) {
   try {
     const response = await model.generateContent([
-      `answer in russian language. You must analyze the article: ${article}`,
+      `answer in  english. You must analyze the article: ${article}`,
     ]);
     console.log("Ответ:", response.response.text());
 
@@ -42,7 +42,9 @@ async function generateContent(article) {
   try {
     // Получение уже проанализированных статей
     const analyzeArticles = await getAnalyzeArticles(siteName);
-    console.log(`${siteName} - Всего проанализированных статей: ${analyzeArticles.length}`);
+    console.log(
+      `${siteName} - Всего проанализированных статей: ${analyzeArticles.length}`
+    );
 
     // Получение всех статей
     const articles = await getArticles(siteName);
